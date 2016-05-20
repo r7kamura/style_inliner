@@ -10,7 +10,7 @@ RSpec.describe StyleInliner::Document do
       document.inline.to_s.gsub(/^ +\n/, "")
     end
 
-    context "with style element in head element" do
+    context "with style element" do
       let(:html) do
         <<-EOS.strip_heredoc
           <!DOCTYPE html>
@@ -37,6 +37,39 @@ RSpec.describe StyleInliner::Document do
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             </head>
             <body style="color: red;">
+            </body>
+          </html>
+        EOS
+      end
+    end
+
+    context "with !important declaration" do
+      let(:html) do
+        <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
+                body {
+                  color: red !important;
+                }
+              </style>
+            </head>
+            <body>
+            </body>
+          </html>
+        EOS
+      end
+
+      it "preserves it" do
+        is_expected.to eq <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body style="color: red !important;">
             </body>
           </html>
         EOS
