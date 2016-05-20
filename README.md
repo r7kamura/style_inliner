@@ -24,7 +24,7 @@ gem install style_inliner
 ## Usage
 
 ```rb
-string = "... some css declarations ..."
+string = "..."
 inliner = StyleInliner::Inliner.new
 node = inliner.call(string)
 ```

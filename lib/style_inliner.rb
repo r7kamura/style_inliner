@@ -1,5 +1,2 @@
+require "style_inliner/inliner"
 require "style_inliner/version"
-
-module StyleInliner
-  # Your code goes here...
-end
