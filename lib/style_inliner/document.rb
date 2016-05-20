@@ -103,7 +103,7 @@ module StyleInliner
     def merge_styles_into_each_element
       css_parser_for_mergeable_rules.each_selector(:all) do |selector, declarations, specificity, media_types|
         if check_selector_mergeability(selector)
-          root.search(selector).each do |node|
+          root.search(strip_link_pseudo_class(selector)).each do |node|
             if check_node_stylability(node)
               push_encoded_rule_set_into_style_attribute(node, declarations, specificity)
             end
@@ -124,6 +124,12 @@ module StyleInliner
     # @return [Nokogiri::XML::Node]
     def root
       @root ||= ::Nokogiri.HTML(@html)
+    end
+
+    # @param selector [String]
+    # @return [String]
+    def strip_link_pseudo_class(selector)
+      selector.gsub(":link", "")
     end
   end
 end

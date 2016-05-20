@@ -152,5 +152,40 @@ RSpec.describe StyleInliner::Document do
         EOS
       end
     end
+
+    context "with :link pseudo class" do
+      let(:html) do
+        <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
+                a:link {
+                  color: red;
+                }
+              </style>
+            </head>
+            <body>
+              <a>example</a>
+            </body>
+          </html>
+        EOS
+      end
+
+      it "ignores it" do
+        is_expected.to eq <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body>
+              <a style="color: red;">example</a>
+            </body>
+          </html>
+        EOS
+      end
+    end
   end
 end
