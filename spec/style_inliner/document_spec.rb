@@ -1,13 +1,13 @@
 require "active_support/core_ext/string/strip"
 
-RSpec.describe StyleInliner::Inliner do
-  let(:inliner) do
-    described_class.new
+RSpec.describe StyleInliner::Document do
+  let(:document) do
+    described_class.new(html)
   end
 
-  describe "#call" do
+  describe "#inline" do
     subject do
-      inliner.call(html).to_s.gsub(/^ +\n/, "")
+      document.inline.to_s.gsub(/^ +\n/, "")
     end
 
     context "with style element in head element" do

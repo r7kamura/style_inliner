@@ -1,2 +1,2 @@
-require "style_inliner/inliner"
+require "style_inliner/document"
 require "style_inliner/version"

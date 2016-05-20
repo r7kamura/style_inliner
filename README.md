@@ -39,8 +39,7 @@ html = <<-EOS
   </body>
 </html>
 EOS
-inliner = StyleInliner::Inliner.new
-puts inliner.call(string)
+puts StyleInliner::Document.new(html).inline
 ```
 
 ```html
