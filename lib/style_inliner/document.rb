@@ -1,6 +1,7 @@
 require "css_parser"
 require "nokogiri"
 require "style_inliner/selector"
+require "style_inliner/specified_declarations"
 
 module StyleInliner
   class Document
@@ -31,13 +32,7 @@ module StyleInliner
 
     def fold_style_attributes
       root.search("*[@style]").each do |node|
-        declarations = node["style"].scan(/\[SPEC\=(\d+)\[(.[^\]]*)\]\]/).map do |declaration|
-          ::CssParser::RuleSet.new(nil, declaration[1], declaration[0])
-        end
-        merged_rule_set = ::CssParser.merge(declarations)
-        merged_rule_set.expand_shorthand!
-        attributes = merged_rule_set.declarations_to_s.gsub('"', "'").split(/;(?![^(]*\))/).map(&:strip).sort
-        node["style"] = attributes.join("; ") + ";"
+        node["style"] = SpecifiedDeclarations.new(node["style"]).to_attributes.join("; ") + ";"
       end
     end
 
