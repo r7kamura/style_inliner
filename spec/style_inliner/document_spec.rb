@@ -112,5 +112,45 @@ RSpec.describe StyleInliner::Document do
         EOS
       end
     end
+
+    context "with unmergeable styles" do
+      let(:html) do
+        <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
+                a:hover {
+                  color: red;
+                }
+              </style>
+            </head>
+            <body>
+              <a>example</a>
+            </body>
+          </html>
+        EOS
+      end
+
+      it "prepends style element into body element for them" do
+        is_expected.to eq <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body>
+          <style>
+          a:hover {
+          color: red;
+          }
+          </style>
+              <a>example</a>
+            </body>
+          </html>
+        EOS
+      end
+    end
   end
 end

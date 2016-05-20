@@ -5,6 +5,19 @@ require "style_inliner/rule_set"
 
 module StyleInliner
   class Document
+    UNMERGEABLE_PSEUDO_CLASS_NAMES = %w(
+      active
+      after
+      before
+      first-letter
+      first-line
+      focus
+      hover
+      selection
+      target
+      visited
+    )
+
     # @param html [String]
     def initialize(html)
       @html = html
@@ -15,6 +28,7 @@ module StyleInliner
       load_styles_from_html
       merge_styles_into_each_element
       fold_style_attributes
+      append_style_element_for_unmergeable_rule_sets
       root
     end
 
@@ -30,17 +44,27 @@ module StyleInliner
       )
     end
 
+    def append_style_element_for_unmergeable_rule_sets
+      rule_set_string = css_parser_for_unmergeable_rules.to_s
+      unless rule_set_string.empty?
+        if (body_node = root.at("body"))
+          body_node.prepend_child(
+            ::Nokogiri::XML.fragment("<style>\n#{rule_set_string}</style>")
+          )
+        end
+      end
+    end
+
     # @param node [Nokogiri::XML::Node]
     # @return [false, true]
     def check_node_stylability(node)
       node.element? && node.name != "head" && node.parent.name != "head"
     end
 
-    # @todo
     # @param selector [String]
     # @return [false, true]
     def check_selector_mergeability(selector)
-      true
+      !selector.start_with?("@") && !UNMERGEABLE_PSEUDO_CLASS_NAMES.any? { |name| selector.include?(":#{name}") }
     end
 
     # @return [CssParser::Parser]
