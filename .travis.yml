@@ -1,3 +1,4 @@
+cache: bundler
 install:
   - gem install bundler
 language: ruby
