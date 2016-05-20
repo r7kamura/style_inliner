@@ -75,5 +75,42 @@ RSpec.describe StyleInliner::Document do
         EOS
       end
     end
+
+    context "with ID selector and multiple elements that have same ID" do
+      let(:html) do
+        <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
+                #example {
+                  color: red;
+                }
+              </style>
+            </head>
+            <body>
+              <p id="example">example1</p>
+              <p id="example">example2</p>
+            </body>
+          </html>
+        EOS
+      end
+
+      it "applies styles to all matched elements" do
+        is_expected.to eq <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body>
+              <p id="example" style="color: red;">example1</p>
+              <p id="example" style="color: red;">example2</p>
+            </body>
+          </html>
+        EOS
+      end
+    end
   end
 end
