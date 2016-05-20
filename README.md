@@ -1,4 +1,4 @@
-# StyleInliner
+# StyleInliner [![Build Status](https://travis-ci.org/r7kamura/style_inliner.svg?branch=master)](https://travis-ci.org/r7kamura/style_inliner)
 Inline CSS style rules into style attributes of each HTML element.
 
 ## Installation
