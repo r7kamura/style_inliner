@@ -1,7 +1,8 @@
 require "css_parser"
 require "nokogiri"
+require "style_inliner/declaration_block"
+require "style_inliner/rule_set"
 require "style_inliner/selector"
-require "style_inliner/specified_declarations"
 
 module StyleInliner
   class Document
@@ -32,7 +33,7 @@ module StyleInliner
 
     def fold_style_attributes
       root.search("*[@style]").each do |node|
-        node["style"] = SpecifiedDeclarations.new(node["style"]).to_attributes.join("; ") + ";"
+        node["style"] = DeclarationBlock.new(RuleSet.decode(node["style"])).to_s
       end
     end
 
@@ -54,17 +55,16 @@ module StyleInliner
     end
 
     def merge_styles_into_each_element
-      css_parser_for_mergeable_rules.each_selector(:all) do |selector, declaration, specificity, media_types|
+      css_parser_for_mergeable_rules.each_selector(:all) do |selector, declarations, specificity, media_types|
         if Selector.new(selector).unmergeable?
           css_parser_for_unmergeable_rules.add_rule_set!(
-            ::CssParser::RuleSet.new(selector, declaration),
+            ::CssParser::RuleSet.new(selector, declarations),
             media_types,
           )
         else
           root.search(selector).each do |node|
             if node.element?
-              node["style"] ||= ""
-              node["style"] += " [SPEC=#{specificity}[#{declaration}]]"
+              node["style"] = "#{node['style']} #{RuleSet.new(declarations: declarations, specificity: specificity).encode}"
             end
           end
         end
