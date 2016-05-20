@@ -24,9 +24,35 @@ gem install style_inliner
 ## Usage
 
 ```rb
-string = "..."
+html = <<-EOS
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+      body {
+        background: red;
+      }
+    </style>
+  </head>
+  <body>
+  </body>
+</html>
+EOS
 inliner = StyleInliner::Inliner.new
-node = inliner.call(string)
+puts inliner.call(string)
+```
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  </head>
+  <body style="background-color: red;">
+  </body>
+</html>
 ```
 
 ## Development
