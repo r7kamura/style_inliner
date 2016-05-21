@@ -230,7 +230,7 @@ RSpec.describe StyleInliner::Document do
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
               <style>
                 td {
-                  background-color: red;
+                  background-color: red !important;
                 }
               </style>
             </head>
@@ -245,7 +245,7 @@ RSpec.describe StyleInliner::Document do
         EOS
       end
 
-      it "replaces it with attributes" do
+      it "replaces it with attributes without !important" do
         is_expected.to eq <<-EOS.strip_heredoc
           <!DOCTYPE html>
           <html>
