@@ -49,7 +49,7 @@ puts StyleInliner::Document.new(html).inline
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   </head>
-  <body style="background-color: red;">
+  <body style="background-color: red">
   </body>
 </html>
 ```

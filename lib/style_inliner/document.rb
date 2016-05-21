@@ -1,6 +1,6 @@
 require "css_parser"
 require "nokogiri"
-require "style_inliner/declaration_block"
+require "style_inliner/node_style_folding"
 require "style_inliner/rule_set"
 
 module StyleInliner
@@ -79,7 +79,7 @@ module StyleInliner
 
     def fold_style_attributes
       root.search("*[@style]").each do |node|
-        node["style"] = DeclarationBlock.new(RuleSet.decode(node["style"])).to_s
+        NodeStyleFolding.new(node).call
       end
     end
 
@@ -118,7 +118,8 @@ module StyleInliner
     # @param declarations [String]
     # @param specificity [Integer]
     def push_encoded_rule_set_into_style_attribute(node, declarations, specificity)
-      node["style"] = "#{node['style']} #{RuleSet.new(declarations: declarations, specificity: specificity).encode}"
+      rule_set = RuleSet.new(declarations: declarations, specificity: specificity)
+      node["style"] = "#{node['style']} #{rule_set.encode}"
     end
 
     # @return [Nokogiri::XML::Node]
