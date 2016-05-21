@@ -54,6 +54,9 @@ puts StyleInliner::Document.new(html).inline
 </html>
 ```
 
+## Ruby version compatibility
+StyleInliner is tested on Ruby 2.2.0.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
