@@ -19,8 +19,10 @@ module StyleInliner
     )
 
     # @param html [String]
-    def initialize(html)
+    # @param replace_properties_to_attributes [false, true]
+    def initialize(html, replace_properties_to_attributes: true)
       @html = html
+      @replace_properties_to_attributes = replace_properties_to_attributes
     end
 
     # @return [Nokogiri::XML::Node]
@@ -79,7 +81,7 @@ module StyleInliner
 
     def fold_style_attributes
       root.search("*[@style]").each do |node|
-        NodeStyleFolding.new(node).call
+        NodeStyleFolding.new(node, replace_properties_to_attributes: @replace_properties_to_attributes).call
       end
     end
 

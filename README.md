@@ -31,15 +31,24 @@ html = <<-EOS
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style>
       body {
-        background: red;
+        background-color: red;
+      }
+
+      td {
+        background-color: blue
       }
     </style>
   </head>
   <body>
+    <table>
+      <tr>
+        <td>example</td>
+      </tr>
+    </table>
   </body>
 </html>
 EOS
-puts StyleInliner::Document.new(html).inline
+puts StyleInliner::Document.new(html, replace_properties_to_attributes: true).inline
 ```
 
 ```html
@@ -50,6 +59,11 @@ puts StyleInliner::Document.new(html).inline
 
   </head>
   <body style="background-color: red">
+    <table>
+      <tr>
+        <td bgcolor="blue">example</td>
+      </tr>
+    </table>
   </body>
 </html>
 ```

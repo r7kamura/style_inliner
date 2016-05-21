@@ -58,12 +58,14 @@ module StyleInliner
     )
 
     # @param node [Nokogiri::XML::Node]
-    def initialize(node)
+    # @param replace_properties_to_attributes [false, true]
+    def initialize(node, replace_properties_to_attributes: true)
       @node = node
+      @replace_properties_to_attributes = replace_properties_to_attributes
     end
 
     def call
-      update_css_compatible_attributes
+      update_css_compatible_attributes if @replace_properties_to_attributes
       update_style_attribute
     end
 

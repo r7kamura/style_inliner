@@ -2,7 +2,11 @@ require "active_support/core_ext/string/strip"
 
 RSpec.describe StyleInliner::Document do
   let(:document) do
-    described_class.new(html)
+    described_class.new(html, **options)
+  end
+
+  let(:options) do
+    {}
   end
 
   describe "#inline" do
@@ -256,6 +260,53 @@ RSpec.describe StyleInliner::Document do
               <table>
                 <tr>
                   <td bgcolor="red">example</td>
+                </tr>
+              </table>
+            </body>
+          </html>
+        EOS
+      end
+    end
+
+    context "with styles compatible with element attributes on disabled" do
+      let(:html) do
+        <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
+                td {
+                  background-color: red;
+                }
+              </style>
+            </head>
+            <body>
+              <table>
+                <tr>
+                  <td>example</td>
+                </tr>
+              </table>
+            </body>
+          </html>
+        EOS
+      end
+
+      let(:options) do
+        super().merge(replace_properties_to_attributes: false)
+      end
+
+      it "does not replaces it" do
+        is_expected.to eq <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body>
+              <table>
+                <tr>
+                  <td style="background-color: red">example</td>
                 </tr>
               </table>
             </body>
