@@ -36,7 +36,7 @@ RSpec.describe StyleInliner::Document do
             <head>
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             </head>
-            <body style="color: red;">
+            <body style="color: red">
             </body>
           </html>
         EOS
@@ -69,7 +69,7 @@ RSpec.describe StyleInliner::Document do
             <head>
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             </head>
-            <body style="color: red !important;">
+            <body style="color: red !important">
             </body>
           </html>
         EOS
@@ -98,11 +98,11 @@ RSpec.describe StyleInliner::Document do
       it "does not apply styles to elements within head element" do
         is_expected.to eq <<-EOS.strip_heredoc
           <!DOCTYPE html>
-          <html style="color: red;">
+          <html style="color: red">
             <head>
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             </head>
-            <body style="color: red;">
+            <body style="color: red">
             </body>
           </html>
         EOS
@@ -138,8 +138,8 @@ RSpec.describe StyleInliner::Document do
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             </head>
             <body>
-              <p id="example" style="color: red;">example1</p>
-              <p id="example" style="color: red;">example2</p>
+              <p id="example" style="color: red">example1</p>
+              <p id="example" style="color: red">example2</p>
             </body>
           </html>
         EOS
@@ -214,7 +214,50 @@ RSpec.describe StyleInliner::Document do
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             </head>
             <body>
-              <a style="color: red;">example</a>
+              <a style="color: red">example</a>
+            </body>
+          </html>
+        EOS
+      end
+    end
+
+    context "with styles compatible with element attributes" do
+      let(:html) do
+        <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
+                td {
+                  background-color: red;
+                }
+              </style>
+            </head>
+            <body>
+              <table>
+                <tr>
+                  <td>example</td>
+                </tr>
+              </table>
+            </body>
+          </html>
+        EOS
+      end
+
+      it "replaces it with attributes" do
+        is_expected.to eq <<-EOS.strip_heredoc
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            </head>
+            <body>
+              <table>
+                <tr>
+                  <td bgcolor="red">example</td>
+                </tr>
+              </table>
             </body>
           </html>
         EOS
